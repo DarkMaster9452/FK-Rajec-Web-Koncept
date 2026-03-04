@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Môj profil – FK Rajec{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <h1><i class="bi bi-person-circle me-3"></i>Môj profil</h1>
+  </div>
+</div>
+
+<div class="container py-5">
+  <div class="row g-4">
+    <div class="col-md-4">
+      <div class="card-fk text-center p-4">
+        {% if user.avatar %}
+        <img src="{{ user.avatar.url }}" class="rounded-circle mb-3 shadow" width="120" height="120" style="object-fit:cover;" alt="">
+        {% else %}
+        <div class="mx-auto mb-3 rounded-circle d-inline-flex align-items-center justify-content-center" style="width:120px;height:120px;background:var(--fk-blue);color:white;font-size:3rem;font-weight:700;">
+          {{ user.username|first|upper }}
+        </div>
+        {% endif %}
+        <h4 class="fw-bold">{{ user.get_full_name|default:user.username }}</h4>
+        <span class="badge-role" style="font-size:0.85rem;padding:5px 15px;">{{ user.get_role_display }}</span>
+        <hr>
+        <div class="text-start text-muted" style="font-size:0.9rem;">
+          <p><i class="bi bi-envelope me-2"></i>{{ user.email|default:'–' }}</p>
+          <p><i class="bi bi-telephone me-2"></i>{{ user.phone|default:'–' }}</p>
+          <p><i class="bi bi-calendar me-2"></i>Člen od {{ user.date_joined|date:"d.m.Y" }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-8">
+      <div class="form-card">
+        <div class="form-card-header">
+          <i class="bi bi-pencil-square me-2"></i>Upraviť profil
+        </div>
+        <div class="p-4">
+          <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="mb-3">
+              <label class="form-label fw-semibold">{{ field.label }}</label>
+              {{ field }}
+              {% if field.errors %}
+              <div class="text-danger mt-1" style="font-size:0.85rem;">
+                {% for error in field.errors %}{{ error }}{% endfor %}
+              </div>
+              {% endif %}
+            </div>
+            {% endfor %}
+            <div class="d-flex gap-2">
+              <button type="submit" class="btn btn-fk-primary">
+                <i class="bi bi-save me-2"></i>Uložiť zmeny
+              </button>
+              <a href="{% url 'index' %}" class="btn btn-outline-secondary">Zrušiť</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ article.title }} – FK Rajec{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'index' %}">Domov</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'news_list' %}">Aktuality</a></li>
+        <li class="breadcrumb-item active">{{ article.title|truncatewords:5 }}</li>
+      </ol>
+    </nav>
+    <h1>{{ article.title }}</h1>
+    <div class="mt-2">
+      <small style="color:rgba(255,255,255,0.7);">
+        <i class="bi bi-person me-1"></i>{{ article.author.get_full_name|default:article.author.username }}
+        &nbsp;·&nbsp;
+        <i class="bi bi-clock me-1"></i>{{ article.published_at|date:"d.m.Y H:i" }}
+      </small>
+    </div>
+  </div>
+</div>
+
+<div class="container py-5">
+  <div class="row">
+    <div class="col-lg-8">
+      {% if article.image %}
+      <img src="{{ article.image.url }}" class="img-fluid rounded-3 mb-4 shadow" alt="{{ article.title }}" style="max-height:400px;width:100%;object-fit:cover;">
+      {% endif %}
+      <div class="card-fk p-4">
+        <div style="line-height:1.8; font-size:1.05rem;">
+          {{ article.content|linebreaks }}
+        </div>
+      </div>
+      {% if user.is_authenticated and user.is_coach_or_above %}
+      <div class="mt-3">
+        <a href="{% url 'news_edit' article.slug %}" class="btn btn-outline-primary btn-sm">
+          <i class="bi bi-pencil me-1"></i>Upraviť
+        </a>
+      </div>
+      {% endif %}
+    </div>
+    <div class="col-lg-4">
+      {% if related %}
+      <h5 class="section-title mb-3" style="font-size:1.2rem;">Ďalšie správy</h5>
+      {% for item in related %}
+      <a href="{% url 'news_detail' item.slug %}" class="text-decoration-none d-block mb-3">
+        <div class="card-fk p-3">
+          <div class="news-category mb-1"><i class="bi bi-tag-fill me-1"></i>Aktuality</div>
+          <div class="fw-bold" style="font-size:0.95rem;">{{ item.title }}</div>
+          <small class="text-muted">{{ item.published_at|date:"d.m.Y" }}</small>
+        </div>
+      </a>
+      {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Tím – FK Rajec{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'index' %}">Domov</a></li>
+        <li class="breadcrumb-item active">Tím</li>
+      </ol>
+    </nav>
+    <h1><i class="bi bi-people-fill me-3"></i>Náš tím</h1>
+    <p class="mb-0" style="color:rgba(255,255,255,0.75);">Hráči FK Rajec – sezóna 2024/2025</p>
+  </div>
+</div>
+
+<div class="container py-5">
+
+  {% if goalkeepers %}
+  <h3 class="section-title mb-4"><i class="bi bi-shield-fill me-2" style="color:var(--fk-gold)"></i>Brankári</h3>
+  <div class="row g-4 mb-5">
+    {% for player in goalkeepers %}
+    <div class="col-sm-6 col-md-4 col-lg-3">
+      {% include 'partials/player_card.html' with player=player %}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% if defenders %}
+  <h3 class="section-title mb-4"><i class="bi bi-people-fill me-2" style="color:var(--fk-gold)"></i>Obrancovia</h3>
+  <div class="row g-4 mb-5">
+    {% for player in defenders %}
+    <div class="col-sm-6 col-md-4 col-lg-3">
+      {% include 'partials/player_card.html' with player=player %}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% if midfielders %}
+  <h3 class="section-title mb-4"><i class="bi bi-arrows-move me-2" style="color:var(--fk-gold)"></i>Záložníci</h3>
+  <div class="row g-4 mb-5">
+    {% for player in midfielders %}
+    <div class="col-sm-6 col-md-4 col-lg-3">
+      {% include 'partials/player_card.html' with player=player %}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% if forwards %}
+  <h3 class="section-title mb-4"><i class="bi bi-lightning-fill me-2" style="color:var(--fk-gold)"></i>Útočníci</h3>
+  <div class="row g-4 mb-5">
+    {% for player in forwards %}
+    <div class="col-sm-6 col-md-4 col-lg-3">
+      {% include 'partials/player_card.html' with player=player %}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% if not goalkeepers and not defenders and not midfielders and not forwards %}
+  <div class="text-center py-5">
+    <i class="bi bi-people" style="font-size:4rem;color:#ccc;"></i>
+    <p class="text-muted mt-3 fs-5">Súpiska nie je ešte zverejnená.</p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

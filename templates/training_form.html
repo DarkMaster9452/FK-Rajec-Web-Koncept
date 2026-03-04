@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if action == 'Vytvoriť' %}Nový tréning{% else %}Upraviť tréning{% endif %} – FK Rajec{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'index' %}">Domov</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'training_list' %}">Tréningy</a></li>
+        <li class="breadcrumb-item active">{{ action }} tréning</li>
+      </ol>
+    </nav>
+    <h1>
+      <i class="bi bi-calendar-plus-fill me-3"></i>
+      {% if action == 'Vytvoriť' %}Nový tréning{% else %}Upraviť tréning{% endif %}
+    </h1>
+  </div>
+</div>
+
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-7">
+      <div class="form-card">
+        <div class="form-card-header">
+          <i class="bi bi-calendar-event me-2"></i>{{ action }} tréning
+        </div>
+        <div class="p-4">
+          <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="mb-3">
+              <label class="form-label fw-semibold">{{ field.label }}</label>
+              {% if field.field.widget.input_type == 'checkbox' %}
+              <div class="form-check">
+                {{ field }}
+                <label class="form-check-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+              </div>
+              {% else %}
+              {{ field }}
+              {% endif %}
+              {% if field.errors %}
+              <div class="text-danger mt-1" style="font-size:0.85rem;">
+                {% for error in field.errors %}{{ error }}{% endfor %}
+              </div>
+              {% endif %}
+            </div>
+            {% endfor %}
+            <div class="d-flex gap-2 mt-4">
+              <button type="submit" class="btn btn-fk-primary">
+                <i class="bi bi-save me-2"></i>{{ action }}
+              </button>
+              <a href="{% url 'training_list' %}" class="btn btn-outline-secondary">Zrušiť</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

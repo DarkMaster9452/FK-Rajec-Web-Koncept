@@ -1,0 +1,293 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}FK Rajec – Futbalový klub{% endblock %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<section class="hero-section">
+  <div class="container position-relative" style="z-index:2;">
+    <div class="row align-items-center">
+      <div class="col-lg-7 py-5">
+        <div class="hero-badge">⚽ Futbalový klub · Rajec, Slovensko</div>
+        <h1 class="hero-title mb-3">
+          Vitajte v<br>
+          <span style="color: var(--fk-gold);">FK Rajec</span>
+        </h1>
+        <p class="hero-subtitle">
+          Viac ako 100 rokov futbalu, vášne a komunity. 
+          Sledujte naše zápasy, spoznajte tím a buďte súčasťou futbalovej rodiny.
+        </p>
+        <div class="d-flex gap-3 flex-wrap">
+          <a href="{% url 'team' %}" class="btn btn-gold btn-lg">
+            <i class="bi bi-people-fill me-2"></i>Náš tím
+          </a>
+          <a href="{% url 'matches' %}" class="btn btn-outline-gold btn-lg">
+            <i class="bi bi-trophy-fill me-2"></i>Zápasy
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-5 text-center d-none d-lg-block py-4">
+        <!-- FK Rajec SVG Logo (large) -->
+        <svg class="hero-logo fk-logo-svg" width="300" height="300" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="120" cy="120" r="116" fill="#001f66" stroke="#FFD700" stroke-width="6"/>
+          <circle cx="120" cy="120" r="100" fill="none" stroke="#FFD700" stroke-width="2" opacity="0.4"/>
+          <!-- Football pentagon pattern -->
+          <polygon points="120,30 148,88 215,88 160,128 182,192 120,155 58,192 80,128 25,88 92,88" fill="#FFD700" opacity="0.12"/>
+          <!-- FK text -->
+          <text x="120" y="105" text-anchor="middle" fill="#FFD700" font-size="44" font-weight="900" font-family="Arial Black,Arial,sans-serif" letter-spacing="4">FK</text>
+          <text x="120" y="145" text-anchor="middle" fill="#ffffff" font-size="26" font-weight="800" font-family="Arial,sans-serif" letter-spacing="6">RAJEC</text>
+          <!-- Founded -->
+          <text x="120" y="175" text-anchor="middle" fill="rgba(255,215,0,0.7)" font-size="11" font-family="Arial,sans-serif" letter-spacing="2">FOUNDED 1921</text>
+          <!-- Decorative circles -->
+          <circle cx="120" cy="120" r="80" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="40"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Stats Bar -->
+<section class="stats-bar">
+  <div class="container">
+    <div class="row text-center g-3">
+      <div class="col-6 col-md-3">
+        <div class="stat-item">
+          <div class="stat-number">{{ players_count }}</div>
+          <div class="stat-label">Hráčov</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-item">
+          <div class="stat-number">100+</div>
+          <div class="stat-label">Rokov histórie</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-item">
+          <div class="stat-number">{{ upcoming_matches|length }}</div>
+          <div class="stat-label">Nadchádzajúce zápasy</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-item">
+          <div class="stat-number">2024<span style="font-size:1.2rem;">/25</span></div>
+          <div class="stat-label">Aktuálna sezóna</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Upcoming Matches -->
+{% if upcoming_matches %}
+<section class="py-5">
+  <div class="container">
+    <div class="row mb-4">
+      <div class="col">
+        <h2 class="section-title">Nadchádzajúce zápasy</h2>
+        <p class="text-muted">Príďte nás podporiť na štadión!</p>
+      </div>
+      <div class="col-auto align-self-end">
+        <a href="{% url 'matches' %}" class="btn btn-fk-primary">Všetky zápasy</a>
+      </div>
+    </div>
+    <div class="row g-3">
+      {% for match in upcoming_matches %}
+      <div class="col-lg-4">
+        <div class="match-card">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="match-badge badge-upcoming">{{ match.get_match_type_display }}</span>
+            <span class="match-meta"><i class="bi bi-calendar3 me-1"></i>{{ match.date|date:"d.m.Y" }}</span>
+          </div>
+          <div class="d-flex align-items-center justify-content-between mt-3">
+            <div class="text-end" style="flex:1;">
+              <div class="match-team">{{ match.home_team }}</div>
+              {% if match.is_home %}<small class="text-muted">(domáci)</small>{% endif %}
+            </div>
+            <div class="match-score mx-3">vs</div>
+            <div style="flex:1;">
+              <div class="match-team">{{ match.away_team }}</div>
+              {% if not match.is_home %}<small class="text-muted">(domáci)</small>{% endif %}
+            </div>
+          </div>
+          <div class="match-meta mt-2 text-center">
+            <i class="bi bi-clock me-1"></i>{{ match.date|date:"H:i" }}
+            &nbsp;·&nbsp;
+            <i class="bi bi-geo-alt me-1"></i>{{ match.venue }}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- Recent Results -->
+{% if recent_matches %}
+<section class="py-5 section-bg-gray">
+  <div class="container">
+    <div class="row mb-4">
+      <div class="col">
+        <h2 class="section-title">Posledné výsledky</h2>
+      </div>
+      <div class="col-auto align-self-end">
+        <a href="{% url 'matches' %}" class="btn btn-fk-primary">Všetky výsledky</a>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-8">
+        {% for match in recent_matches %}
+        <div class="match-card">
+          <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center" style="flex:1;">
+              <div class="match-team">{{ match.home_team }}</div>
+            </div>
+            <div class="d-flex align-items-center gap-2 mx-3">
+              <div class="match-score">{{ match.score_display }}</div>
+              {% with result=match.get_result %}
+              {% if result == 'W' %}<span class="match-badge badge-win">Výhra</span>
+              {% elif result == 'D' %}<span class="match-badge badge-draw">Remíza</span>
+              {% elif result == 'L' %}<span class="match-badge badge-loss">Prehra</span>
+              {% endif %}
+              {% endwith %}
+            </div>
+            <div class="text-end" style="flex:1;">
+              <div class="match-team">{{ match.away_team }}</div>
+            </div>
+          </div>
+          <div class="match-meta mt-1 text-center">
+            <i class="bi bi-calendar3 me-1"></i>{{ match.date|date:"d.m.Y" }}
+            &nbsp;·&nbsp; {{ match.get_match_type_display }}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <div class="col-lg-4">
+        <div class="card-fk">
+          <div class="card-header-fk">
+            <i class="bi bi-bar-chart-fill me-2"></i>Sezóna 2024/25
+          </div>
+          <div class="p-3">
+            <table class="table table-sm mb-0">
+              <tr>
+                <td class="text-muted">Súťaž</td>
+                <td class="fw-bold text-fk-blue">IV. liga</td>
+              </tr>
+              <tr>
+                <td class="text-muted">Skupina</td>
+                <td class="fw-bold text-fk-blue">Západ</td>
+              </tr>
+              <tr>
+                <td class="text-muted">Štadión</td>
+                <td class="fw-bold">Rajec</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        {% if next_training and user.is_authenticated and user.is_player_or_above %}
+        <div class="card-fk mt-3">
+          <div class="card-header-fk">
+            <i class="bi bi-calendar-check-fill me-2"></i>Najbližší tréning
+          </div>
+          <div class="p-3">
+            <div class="d-flex align-items-center gap-3">
+              <div class="training-date">
+                <div class="training-day">{{ next_training.date|date:"d" }}</div>
+                <div class="training-month">{{ next_training.date|date:"M" }}</div>
+              </div>
+              <div>
+                <div class="fw-bold">{{ next_training.title }}</div>
+                <div class="text-muted" style="font-size:0.85rem;">
+                  <i class="bi bi-clock me-1"></i>{{ next_training.date|date:"H:i" }}
+                  <br><i class="bi bi-geo-alt me-1"></i>{{ next_training.location }}
+                </div>
+              </div>
+            </div>
+            <a href="{% url 'training_detail' next_training.pk %}" class="btn btn-fk-primary btn-sm mt-2 w-100">Zobraziť detail</a>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- Latest News -->
+<section class="py-5">
+  <div class="container">
+    <div class="row mb-4">
+      <div class="col">
+        <h2 class="section-title">Aktuality</h2>
+        <p class="text-muted">Novinky z klubu a okolia</p>
+      </div>
+      <div class="col-auto align-self-end">
+        <a href="{% url 'news_list' %}" class="btn btn-fk-primary">Všetky správy</a>
+      </div>
+    </div>
+    {% if latest_news %}
+    <div class="row g-4">
+      {% for article in latest_news %}
+      <div class="col-md-4">
+        <a href="{% url 'news_detail' article.slug %}" class="text-decoration-none">
+          <div class="news-card card">
+            {% if article.image %}
+            <img src="{{ article.image.url }}" class="card-img-top" alt="{{ article.title }}">
+            {% else %}
+            <div class="news-img-placeholder">
+              <i class="bi bi-newspaper"></i>
+            </div>
+            {% endif %}
+            <div class="card-body">
+              <div class="news-category mb-1">
+                <i class="bi bi-tag-fill me-1"></i>Aktuality
+              </div>
+              <h5 class="card-title">{{ article.title }}</h5>
+              <p class="card-text text-muted" style="font-size:0.88rem;">{{ article.excerpt|default:article.content|truncatewords:20 }}</p>
+              <div class="d-flex align-items-center justify-content-between mt-3">
+                <small class="text-muted"><i class="bi bi-clock me-1"></i>{{ article.published_at|date:"d.m.Y" }}</small>
+                <span class="text-fk-blue fw-bold" style="font-size:0.85rem;">Čítať viac →</span>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+      <i class="bi bi-newspaper" style="font-size:3rem; color:#ccc;"></i>
+      <p class="text-muted mt-3">Zatiaľ žiadne aktuality.</p>
+      {% if user.is_authenticated and user.is_coach_or_above %}
+      <a href="{% url 'news_create' %}" class="btn btn-fk-primary">Pridať aktualitu</a>
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- Join / CTA Section -->
+{% if not user.is_authenticated %}
+<section class="py-5" style="background: linear-gradient(135deg, var(--fk-blue-dark) 0%, var(--fk-blue) 100%);">
+  <div class="container text-center text-white">
+    <h2 class="fw-bold mb-3" style="font-size:2rem;">Staňte sa súčasťou FK Rajec!</h2>
+    <p style="font-size:1.1rem; color:rgba(255,255,255,0.8);" class="mb-4">
+      Zaregistrujte sa a získajte prístup k exkluzívnym funkciám – tréningové plány, 
+      štatistiky hráčov a oveľa viac.
+    </p>
+    <div class="d-flex gap-3 justify-content-center">
+      <a href="{% url 'register' %}" class="btn btn-gold btn-lg">
+        <i class="bi bi-person-plus-fill me-2"></i>Registrovať sa
+      </a>
+      <a href="{% url 'login' %}" class="btn btn-outline-gold btn-lg">
+        <i class="bi bi-box-arrow-in-right me-2"></i>Prihlásiť sa
+      </a>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% endblock %}

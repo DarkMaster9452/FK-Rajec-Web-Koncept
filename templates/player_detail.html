@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ player.get_full_name }} – FK Rajec{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'index' %}">Domov</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'team' %}">Tím</a></li>
+        <li class="breadcrumb-item active">{{ player.get_full_name }}</li>
+      </ol>
+    </nav>
+    <h1>{{ player.get_full_name }}</h1>
+  </div>
+</div>
+
+<div class="container py-5">
+  <div class="row g-4">
+    <div class="col-md-4">
+      {% if player.photo %}
+      <img src="{{ player.photo.url }}" class="img-fluid rounded-3 shadow" alt="{{ player.get_full_name }}">
+      {% else %}
+      <div class="player-photo-placeholder rounded-3 shadow" style="height:340px;">
+        <i class="bi bi-person-fill" style="font-size:6rem;"></i>
+      </div>
+      {% endif %}
+    </div>
+    <div class="col-md-8">
+      <div class="d-flex align-items-center gap-3 mb-3">
+        {% if player.jersey_number %}
+        <span style="font-size:3rem;font-weight:900;color:var(--fk-gold);">#{{ player.jersey_number }}</span>
+        {% endif %}
+        <span class="player-position-badge position-static" style="font-size:0.9rem;padding:6px 16px;">{{ player.get_position_display }}</span>
+      </div>
+      <h2 class="fw-bold text-fk-blue">{{ player.get_full_name }}</h2>
+      {% if player.nationality %}
+      <p class="text-muted"><i class="bi bi-flag me-2"></i>{{ player.nationality }}</p>
+      {% endif %}
+      {% if player.date_of_birth %}
+      <p class="text-muted"><i class="bi bi-calendar me-2"></i>{{ player.date_of_birth|date:"d.m.Y" }}</p>
+      {% endif %}
+      {% if player.joined_date %}
+      <p class="text-muted"><i class="bi bi-door-open me-2"></i>V klube od {{ player.joined_date|date:"Y" }}</p>
+      {% endif %}
+
+      <hr class="divider-gold">
+
+      <!-- Stats -->
+      <div class="row g-3 mb-4">
+        <div class="col-4 text-center">
+          <div class="card-fk p-3">
+            <div class="stat-number" style="font-size:2rem;color:var(--fk-blue);">{{ player.goals }}</div>
+            <div class="stat-label" style="color:#555;">Góly</div>
+          </div>
+        </div>
+        <div class="col-4 text-center">
+          <div class="card-fk p-3">
+            <div class="stat-number" style="font-size:2rem;color:var(--fk-blue);">{{ player.assists }}</div>
+            <div class="stat-label" style="color:#555;">Asistencie</div>
+          </div>
+        </div>
+        <div class="col-4 text-center">
+          <div class="card-fk p-3">
+            <div class="stat-number" style="font-size:2rem;color:var(--fk-blue);">{{ player.appearances }}</div>
+            <div class="stat-label" style="color:#555;">Zápasy</div>
+          </div>
+        </div>
+      </div>
+
+      {% if player.bio %}
+      <div class="card-fk p-3">
+        <h5 class="text-fk-blue"><i class="bi bi-person-lines-fill me-2"></i>O hráčovi</h5>
+        <p class="mb-0">{{ player.bio }}</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

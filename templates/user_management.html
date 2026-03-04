@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}Správa používateľov – FK Rajec{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <h1><i class="bi bi-people-fill me-3"></i>Správa používateľov</h1>
+    <p class="mb-0" style="color:rgba(255,255,255,0.75);">Správa rolí a oprávnení</p>
+  </div>
+</div>
+
+<div class="container py-5">
+  <div class="table-responsive">
+    <table class="table table-fk table-hover">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Používateľ</th>
+          <th>E-mail</th>
+          <th>Rola</th>
+          <th>Aktívny</th>
+          <th>Člen od</th>
+          <th>Akcia</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for u in users %}
+        <tr>
+          <td>{{ u.pk }}</td>
+          <td class="fw-semibold">
+            {{ u.get_full_name|default:u.username }}
+            <small class="text-muted d-block">@{{ u.username }}</small>
+          </td>
+          <td>{{ u.email }}</td>
+          <td>
+            <span class="badge-role">{{ u.get_role_display }}</span>
+          </td>
+          <td>
+            {% if u.is_active %}
+            <span class="badge bg-success">Áno</span>
+            {% else %}
+            <span class="badge bg-danger">Nie</span>
+            {% endif %}
+          </td>
+          <td>{{ u.date_joined|date:"d.m.Y" }}</td>
+          <td>
+            {% if u.pk != user.pk %}
+            <a href="{% url 'user_role_change' u.pk %}" class="btn btn-sm btn-outline-primary">
+              <i class="bi bi-pencil me-1"></i>Zmeniť rolu
+            </a>
+            {% else %}
+            <span class="text-muted">(vy)</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}Aktuality – FK Rajec{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'index' %}">Domov</a></li>
+        <li class="breadcrumb-item active">Aktuality</li>
+      </ol>
+    </nav>
+    <div class="d-flex align-items-center justify-content-between">
+      <div>
+        <h1><i class="bi bi-newspaper me-3"></i>Aktuality</h1>
+        <p class="mb-0" style="color:rgba(255,255,255,0.75);">Novinky z klubu a okolia</p>
+      </div>
+      {% if user.is_authenticated and user.is_coach_or_above %}
+      <a href="{% url 'news_create' %}" class="btn btn-gold">
+        <i class="bi bi-plus-circle me-2"></i>Nová správa
+      </a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="container py-5">
+  {% if news_items %}
+  <div class="row g-4">
+    {% for article in news_items %}
+    <div class="col-md-6 col-lg-4">
+      <a href="{% url 'news_detail' article.slug %}" class="text-decoration-none">
+        <div class="news-card card h-100">
+          {% if article.image %}
+          <img src="{{ article.image.url }}" class="card-img-top" alt="{{ article.title }}">
+          {% else %}
+          <div class="news-img-placeholder">
+            <i class="bi bi-newspaper"></i>
+          </div>
+          {% endif %}
+          <div class="card-body d-flex flex-column">
+            <div class="news-category mb-1">
+              <i class="bi bi-tag-fill me-1"></i>Aktuality
+            </div>
+            <h5 class="card-title">{{ article.title }}</h5>
+            <p class="card-text text-muted flex-grow-1" style="font-size:0.88rem;">
+              {{ article.excerpt|default:article.content|truncatewords:25 }}
+            </p>
+            <div class="d-flex align-items-center justify-content-between mt-3">
+              <div>
+                <small class="text-muted">
+                  <i class="bi bi-person me-1"></i>{{ article.author.get_full_name|default:article.author.username }}
+                </small>
+                <br>
+                <small class="text-muted">
+                  <i class="bi bi-clock me-1"></i>{{ article.published_at|date:"d.m.Y" }}
+                </small>
+              </div>
+              <span class="text-fk-blue fw-bold" style="font-size:0.85rem;">Čítať →</span>
+            </div>
+          </div>
+        </div>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="text-center py-5">
+    <i class="bi bi-newspaper" style="font-size:4rem;color:#ccc;"></i>
+    <p class="text-muted mt-3 fs-5">Zatiaľ žiadne aktuality.</p>
+    {% if user.is_authenticated and user.is_coach_or_above %}
+    <a href="{% url 'news_create' %}" class="btn btn-fk-primary">Pridať aktualitu</a>
+    {% endif %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

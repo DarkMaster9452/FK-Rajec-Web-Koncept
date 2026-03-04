@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Zmena roly – FK Rajec{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-5">
+      <div class="form-card">
+        <div class="form-card-header">
+          <i class="bi bi-person-gear me-2"></i>Zmena roly používateľa
+        </div>
+        <div class="p-4">
+          <div class="mb-4 text-center">
+            <div class="fw-bold fs-5">{{ target.get_full_name|default:target.username }}</div>
+            <small class="text-muted">@{{ target.username }}</small>
+            <br>
+            <span class="badge-role mt-2 d-inline-block">{{ target.get_role_display }}</span>
+          </div>
+          <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="mb-3">
+              <label class="form-label fw-semibold">{{ field.label }}</label>
+              {{ field }}
+            </div>
+            {% endfor %}
+            <div class="d-flex gap-2">
+              <button type="submit" class="btn btn-fk-primary">Uložiť</button>
+              <a href="{% url 'user_management' %}" class="btn btn-outline-secondary">Zrušiť</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

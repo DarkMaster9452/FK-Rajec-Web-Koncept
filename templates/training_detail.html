@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ training.title }} – FK Rajec{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'index' %}">Domov</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'training_list' %}">Tréningy</a></li>
+        <li class="breadcrumb-item active">{{ training.title }}</li>
+      </ol>
+    </nav>
+    <div class="d-flex align-items-start justify-content-between">
+      <div>
+        <h1>{{ training.title }}</h1>
+        {% if training.is_mandatory %}
+        <span class="badge bg-warning text-dark">Povinný tréning</span>
+        {% endif %}
+      </div>
+      {% if user.is_coach_or_above %}
+      <div class="d-flex gap-2">
+        <a href="{% url 'training_edit' training.pk %}" class="btn btn-gold btn-sm">
+          <i class="bi bi-pencil me-1"></i>Upraviť
+        </a>
+        <a href="{% url 'training_delete' training.pk %}" class="btn btn-sm" style="background:rgba(255,255,255,0.15);color:white;">
+          <i class="bi bi-trash me-1"></i>Zmazať
+        </a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="container py-5">
+  <div class="row g-4">
+    <div class="col-md-5">
+      <div class="card-fk p-4 mb-4">
+        <h5 class="text-fk-blue fw-bold mb-3"><i class="bi bi-info-circle me-2"></i>Informácie</h5>
+        <table class="table table-sm">
+          <tr>
+            <td class="text-muted">Dátum a čas</td>
+            <td class="fw-bold">{{ training.date|date:"d.m.Y H:i" }}</td>
+          </tr>
+          <tr>
+            <td class="text-muted">Trvanie</td>
+            <td>{{ training.duration_minutes }} minút</td>
+          </tr>
+          <tr>
+            <td class="text-muted">Miesto</td>
+            <td>{{ training.location }}</td>
+          </tr>
+          <tr>
+            <td class="text-muted">Tréner</td>
+            <td>{{ training.coach.get_full_name|default:training.coach.username|default:'–' }}</td>
+          </tr>
+        </table>
+        {% if training.description %}
+        <div class="mt-3">
+          <h6 class="fw-bold">Popis tréningu:</h6>
+          <p class="text-muted mb-0">{{ training.description|linebreaks }}</p>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Attendance mark (for players) -->
+      {% if user.is_player_or_above %}
+      <div class="card-fk p-4">
+        <h5 class="text-fk-blue fw-bold mb-3"><i class="bi bi-check2-circle me-2"></i>Moja účasť</h5>
+        {% if my_attendance %}
+        <div class="alert {% if my_attendance.attended %}alert-success{% else %}alert-warning{% endif %} py-2">
+          {% if my_attendance.attended %}
+          <i class="bi bi-check-circle-fill me-2"></i>Zúčastnil som sa
+          {% else %}
+          <i class="bi bi-x-circle-fill me-2"></i>Nezúčastnil som sa
+          {% endif %}
+          {% if my_attendance.note %} – {{ my_attendance.note }}{% endif %}
+        </div>
+        {% endif %}
+        <form action="{% url 'training_mark_attendance' training.pk %}" method="post">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Aktualizovať dochádzku:</label>
+            <div class="d-flex gap-3">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="attended" value="yes" id="att_yes"
+                  {% if my_attendance.attended %}checked{% endif %}>
+                <label class="form-check-label" for="att_yes">Zúčastnil som sa</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="attended" value="no" id="att_no"
+                  {% if my_attendance and not my_attendance.attended %}checked{% endif %}>
+                <label class="form-check-label" for="att_no">Nezúčastnil som sa</label>
+              </div>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Poznámka (nepovinné):</label>
+            <input type="text" name="note" class="form-control form-control-sm"
+              value="{{ my_attendance.note|default:'' }}" placeholder="napr. choroba...">
+          </div>
+          <button type="submit" class="btn btn-fk-primary btn-sm">Uložiť</button>
+        </form>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Attendance list (coaches/admins) -->
+    {% if user.is_coach_or_above %}
+    <div class="col-md-7">
+      <div class="card-fk">
+        <div class="card-header-fk">
+          <i class="bi bi-list-check me-2"></i>Dochádzka ({{ attendance.count }} záznamov)
+        </div>
+        <div class="p-3">
+          {% if attendance %}
+          <table class="table table-fk table-sm">
+            <thead>
+              <tr>
+                <th>Hráč</th>
+                <th>Účasť</th>
+                <th>Poznámka</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for rec in attendance %}
+              <tr>
+                <td>{{ rec.player.get_full_name|default:rec.player.username }}</td>
+                <td>
+                  {% if rec.attended %}
+                  <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Áno</span>
+                  {% else %}
+                  <span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>Nie</span>
+                  {% endif %}
+                </td>
+                <td class="text-muted" style="font-size:0.85rem;">{{ rec.note }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% else %}
+          <p class="text-muted text-center py-3">Žiadne záznamy o dochádzke</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

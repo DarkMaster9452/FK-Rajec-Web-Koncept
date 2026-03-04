@@ -1,0 +1,32 @@
+<a href="{% url 'player_detail' player.pk %}" class="text-decoration-none">
+  <div class="player-card card position-relative">
+    {% if player.photo %}
+    <img src="{{ player.photo.url }}" class="player-photo" alt="{{ player.get_full_name }}">
+    {% else %}
+    <div class="player-photo-placeholder">
+      <i class="bi bi-person-fill"></i>
+    </div>
+    {% endif %}
+    {% if player.jersey_number %}
+    <span class="player-number">{{ player.jersey_number }}</span>
+    {% endif %}
+    <span class="player-position-badge">{{ player.get_position_display }}</span>
+    <div class="card-body text-center p-3">
+      <div class="player-name">{{ player.first_name }}<br>{{ player.last_name }}</div>
+      <div class="d-flex justify-content-around mt-2">
+        <div class="text-center">
+          <div class="player-stat-value">{{ player.goals }}</div>
+          <div class="player-stat">Góly</div>
+        </div>
+        <div class="text-center">
+          <div class="player-stat-value">{{ player.assists }}</div>
+          <div class="player-stat">Asistencie</div>
+        </div>
+        <div class="text-center">
+          <div class="player-stat-value">{{ player.appearances }}</div>
+          <div class="player-stat">Zápasy</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</a>

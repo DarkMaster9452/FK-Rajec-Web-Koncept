@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block title %}Tréningy – FK Rajec{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'index' %}">Domov</a></li>
+        <li class="breadcrumb-item active">Tréningy</li>
+      </ol>
+    </nav>
+    <div class="d-flex align-items-center justify-content-between">
+      <div>
+        <h1><i class="bi bi-calendar-check-fill me-3"></i>Tréningy</h1>
+        <p class="mb-0" style="color:rgba(255,255,255,0.75);">Plán tréningov a dochádzka</p>
+      </div>
+      {% if user.is_coach_or_above %}
+      <a href="{% url 'training_create' %}" class="btn btn-gold">
+        <i class="bi bi-plus-circle me-2"></i>Nový tréning
+      </a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="container py-5">
+  <!-- Upcoming -->
+  <h3 class="section-title mb-4">Nadchádzajúce tréningy</h3>
+  {% if upcoming %}
+  <div class="row g-3 mb-5">
+    {% for training in upcoming %}
+    <div class="col-lg-6">
+      <a href="{% url 'training_detail' training.pk %}" class="text-decoration-none">
+        <div class="training-card {% if training.is_mandatory %}mandatory{% endif %}">
+          <div class="d-flex align-items-center gap-3">
+            <div class="training-date">
+              <div class="training-day">{{ training.date|date:"d" }}</div>
+              <div class="training-month">{{ training.date|date:"M" }}</div>
+            </div>
+            <div class="flex-grow-1">
+              <div class="fw-bold fs-5 text-fk-blue">{{ training.title }}</div>
+              <div class="text-muted" style="font-size:0.88rem;">
+                <i class="bi bi-clock me-1"></i>{{ training.date|date:"H:i" }}
+                &nbsp;·&nbsp;
+                <i class="bi bi-stopwatch me-1"></i>{{ training.duration_minutes }} min
+                &nbsp;·&nbsp;
+                <i class="bi bi-geo-alt me-1"></i>{{ training.location }}
+              </div>
+              {% if training.is_mandatory %}
+              <span class="badge bg-warning text-dark mt-1" style="font-size:0.7rem;">Povinný</span>
+              {% endif %}
+            </div>
+            <i class="bi bi-chevron-right text-muted"></i>
+          </div>
+        </div>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="text-center py-4 text-muted mb-5">
+    <i class="bi bi-calendar-x" style="font-size:2.5rem;"></i>
+    <p class="mt-2">Žiadne naplánované tréningy</p>
+  </div>
+  {% endif %}
+
+  <!-- Past -->
+  <h3 class="section-title mb-4">Minulé tréningy</h3>
+  {% if past %}
+  <div class="table-responsive">
+    <table class="table table-fk table-hover">
+      <thead>
+        <tr>
+          <th>Dátum</th>
+          <th>Názov</th>
+          <th>Miesto</th>
+          <th>Trvanie</th>
+          <th>Tréner</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for training in past %}
+        <tr>
+          <td>{{ training.date|date:"d.m.Y H:i" }}</td>
+          <td class="fw-semibold">
+            {{ training.title }}
+            {% if training.is_mandatory %}
+            <span class="badge bg-warning text-dark ms-1" style="font-size:0.65rem;">Povinný</span>
+            {% endif %}
+          </td>
+          <td>{{ training.location }}</td>
+          <td>{{ training.duration_minutes }} min</td>
+          <td>{{ training.coach.get_full_name|default:training.coach.username|default:'–' }}</td>
+          <td>
+            <a href="{% url 'training_detail' training.pk %}" class="btn btn-sm btn-outline-primary">Detail</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="text-center py-4 text-muted">
+    <p>Žiadne minulé tréningy</p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

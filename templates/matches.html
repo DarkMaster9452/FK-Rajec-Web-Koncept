@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% block title %}Zápasy – FK Rajec{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'index' %}">Domov</a></li>
+        <li class="breadcrumb-item active">Zápasy</li>
+      </ol>
+    </nav>
+    <h1><i class="bi bi-trophy-fill me-3"></i>Zápasy</h1>
+    <p class="mb-0" style="color:rgba(255,255,255,0.75);">Výsledky a program</p>
+  </div>
+</div>
+
+<div class="container py-4">
+  <!-- Season Filter -->
+  <div class="d-flex gap-2 flex-wrap mb-4">
+    {% for s in all_seasons %}
+    <a href="?season={{ s }}" class="btn {% if s == season %}btn-fk-primary{% else %}btn-outline-secondary{% endif %} btn-sm">
+      {{ s }}
+    </a>
+    {% empty %}
+    <span class="text-muted">Sezóna 2024/2025</span>
+    {% endfor %}
+  </div>
+
+  <div class="row g-4">
+    <!-- Upcoming Matches -->
+    <div class="col-lg-6">
+      <h3 class="section-title mb-4">Program zápasov</h3>
+      {% if upcoming %}
+      {% for match in upcoming %}
+      <div class="match-card">
+        <div class="d-flex justify-content-between mb-2">
+          <span class="match-badge badge-upcoming">{{ match.get_match_type_display }}</span>
+          <span class="match-meta">{{ match.date|date:"d.m.Y H:i" }}</span>
+        </div>
+        <div class="d-flex align-items-center justify-content-between">
+          <div class="match-team {% if match.is_home %}fw-bold{% endif %}">{{ match.home_team }}</div>
+          <div class="match-score mx-3">vs</div>
+          <div class="match-team {% if not match.is_home %}fw-bold{% endif %}">{{ match.away_team }}</div>
+        </div>
+        <div class="match-meta mt-2 text-center">
+          <i class="bi bi-geo-alt me-1"></i>{{ match.venue }}
+        </div>
+      </div>
+      {% endfor %}
+      {% else %}
+      <div class="text-center py-4 text-muted">
+        <i class="bi bi-calendar-x" style="font-size:2.5rem;"></i>
+        <p class="mt-2">Žiadne nadchádzajúce zápasy</p>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Results -->
+    <div class="col-lg-6">
+      <h3 class="section-title mb-4">Výsledky</h3>
+      {% if results %}
+      {% for match in results %}
+      <div class="match-card">
+        <div class="d-flex justify-content-between mb-2">
+          <span class="match-badge badge-upcoming">{{ match.get_match_type_display }}</span>
+          <span class="match-meta">{{ match.date|date:"d.m.Y" }}</span>
+        </div>
+        <div class="d-flex align-items-center justify-content-between">
+          <div class="match-team {% if match.is_home %}fw-bold{% endif %}">{{ match.home_team }}</div>
+          <div class="d-flex align-items-center gap-2 mx-3">
+            <div class="match-score">{{ match.score_display }}</div>
+            {% with result=match.get_result %}
+            {% if result == 'W' %}<span class="match-badge badge-win">V</span>
+            {% elif result == 'D' %}<span class="match-badge badge-draw">R</span>
+            {% elif result == 'L' %}<span class="match-badge badge-loss">P</span>
+            {% endif %}
+            {% endwith %}
+          </div>
+          <div class="match-team {% if not match.is_home %}fw-bold{% endif %}">{{ match.away_team }}</div>
+        </div>
+        {% if match.report %}
+        <div class="match-meta mt-2">
+          <i class="bi bi-file-text me-1"></i>{{ match.report|truncatewords:15 }}
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+      {% else %}
+      <div class="text-center py-4 text-muted">
+        <i class="bi bi-trophy" style="font-size:2.5rem;"></i>
+        <p class="mt-2">Žiadne výsledky pre túto sezónu</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
