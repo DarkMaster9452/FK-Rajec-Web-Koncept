@@ -2,14 +2,16 @@ import Link from "next/link";
 import { Mail, MapPin, Phone, Facebook, Youtube } from "lucide-react";
 
 export function Footer() {
+  const logoUrl = "https://www.rajec.sk/cache/blocks/lg/87/01930bd2-3b33-7cdf-84f5-8ec4fde6f187.webp";
+
   return (
     <footer className="bg-brand-black text-white/80 mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         {/* Brand */}
         <div className="lg:col-span-1">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 bg-brand-red rounded-sm flex items-center justify-center font-heading text-white text-lg">
-              FK
+            <div className="w-10 h-10 rounded-sm overflow-hidden bg-white/10 border border-white/20 shrink-0">
+              <img src={logoUrl} alt="FK Rajec logo" className="w-full h-full object-cover" />
             </div>
             <div>
               <p className="font-heading text-white text-lg tracking-widest">FK RAJEC</p>

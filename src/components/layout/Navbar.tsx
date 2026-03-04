@@ -27,6 +27,7 @@ export function Navbar() {
   const { data: session } = useSession();
   const [mobileOpen, setMobileOpen] = useState(false);
   const isStaticExport = process.env.NEXT_PUBLIC_STATIC_EXPORT === "true";
+  const logoUrl = "https://www.rajec.sk/cache/blocks/lg/87/01930bd2-3b33-7cdf-84f5-8ec4fde6f187.webp";
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 glass-dark border-b border-white/10">
@@ -34,8 +35,8 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 bg-brand-red rounded-sm flex items-center justify-center font-heading text-white font-bold text-lg">
-              FK
+            <div className="w-10 h-10 rounded-sm overflow-hidden bg-white/10 border border-white/20 shrink-0">
+              <img src={logoUrl} alt="FK Rajec logo" className="w-full h-full object-cover" />
             </div>
             <div className="flex flex-col leading-none">
               <span className="font-heading text-white text-xl tracking-widest">FK RAJEC</span>

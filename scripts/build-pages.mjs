@@ -48,6 +48,27 @@ function runBuild() {
   });
 }
 
+function runHtmlFormatter() {
+  return new Promise((resolve, reject) => {
+    const child = spawn("node", ["scripts/format-export-html.mjs"], {
+      cwd: root,
+      stdio: "inherit",
+      shell: process.platform === "win32",
+      env: {
+        ...process.env,
+      },
+    });
+
+    child.on("close", (code) => {
+      if (code === 0) {
+        resolve();
+      } else {
+        reject(new Error(`HTML formatting failed with exit code ${code}`));
+      }
+    });
+  });
+}
+
 async function prepareTempWorkspace() {
   await rm(tempRoot, { recursive: true, force: true });
 
@@ -72,6 +93,7 @@ try {
   await prepareTempWorkspace();
   await runBuild();
   await copyBuildOutputBack();
+  await runHtmlFormatter();
 } finally {
   await rm(tempRoot, { recursive: true, force: true });
 }

@@ -67,13 +67,14 @@ export function DashboardSidebar({ session }: Props) {
   const role = session.user.role;
   const navItems = getNavItems(role);
   const rb = roleBadge[role as keyof typeof roleBadge] ?? roleBadge.PLAYER;
+  const logoUrl = "https://www.rajec.sk/cache/blocks/lg/87/01930bd2-3b33-7cdf-84f5-8ec4fde6f187.webp";
 
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="border-b border-sidebar-border">
         <Link href="/" className="flex items-center gap-3 px-2 py-1">
-          <div className="w-9 h-9 bg-brand-red rounded-sm flex items-center justify-center shrink-0">
-            <span className="font-heading text-white text-base">FK</span>
+          <div className="w-9 h-9 rounded-sm overflow-hidden bg-white/10 border border-white/20 shrink-0">
+            <img src={logoUrl} alt="FK Rajec logo" className="w-full h-full object-cover" />
           </div>
           <div className="flex flex-col leading-none">
             <span className="font-heading text-sidebar-foreground text-base tracking-widest">FK RAJEC</span>
