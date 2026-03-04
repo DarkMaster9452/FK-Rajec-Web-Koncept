@@ -1,9 +1,16 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { loadAuthModule, loadDbModule, isStaticExport } from "@/lib/runtime";
+
+export const dynamic = "force-static";
 
 export async function POST(req: Request) {
-  const session = await auth();
+  if (isStaticExport) {
+    return NextResponse.json({ error: "API is unavailable on static hosting" }, { status: 501 });
+  }
+
+  const { auth } = await loadAuthModule();
+  const { db } = await loadDbModule();
+  const session = (await auth()) as { user: { role: string; id: string } } | null;
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { trainingId, userId, status } = await req.json();

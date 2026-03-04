@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { loadAuthModule, loadDbModule, isStaticExport } from "@/lib/runtime";
 import { z } from "zod";
+
+export const dynamic = "force-static";
 
 const TrainingSchema = z.object({
   title: z.string().min(1),
@@ -12,7 +13,13 @@ const TrainingSchema = z.object({
 });
 
 export async function GET() {
-  const session = await auth();
+  if (isStaticExport) {
+    return NextResponse.json({ error: "API is unavailable on static hosting" }, { status: 501 });
+  }
+
+  const { auth } = await loadAuthModule();
+  const { db } = await loadDbModule();
+  const session = (await auth()) as { user: { role: string; id: string } } | null;
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const trainings = await db.training.findMany({
@@ -24,7 +31,13 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  const session = await auth();
+  if (isStaticExport) {
+    return NextResponse.json({ error: "API is unavailable on static hosting" }, { status: 501 });
+  }
+
+  const { auth } = await loadAuthModule();
+  const { db } = await loadDbModule();
+  const session = (await auth()) as { user: { role: string; id: string } } | null;
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   if (session.user.role === "PLAYER") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 

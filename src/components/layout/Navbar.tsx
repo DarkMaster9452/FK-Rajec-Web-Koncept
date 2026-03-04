@@ -26,6 +26,7 @@ const navLinks = [
 export function Navbar() {
   const { data: session } = useSession();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const isStaticExport = process.env.NEXT_PUBLIC_STATIC_EXPORT === "true";
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 glass-dark border-b border-white/10">
@@ -95,11 +96,12 @@ export function Navbar() {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-            ) : (
+            ) : !isStaticExport ? (
               <Button asChild size="sm" className="bg-brand-red hover:bg-red-700 text-white border-0">
                 <Link href="/auth/login">Prihlásiť sa</Link>
               </Button>
-            )}
+            ) : null
+            }
 
             {/* Mobile menu toggle */}
             <button
