@@ -15,7 +15,6 @@ const excludedPrefixes = [
   "out/",
   "node_modules/",
   "src/app/api/",
-  "src/app/auth/",
   "src/app/dashboard/",
 ];
 

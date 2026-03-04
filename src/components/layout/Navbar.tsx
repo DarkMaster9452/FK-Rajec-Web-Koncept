@@ -26,7 +26,6 @@ const navLinks = [
 export function Navbar() {
   const { data: session } = useSession();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const isStaticExport = process.env.NEXT_PUBLIC_STATIC_EXPORT === "true";
   const logoUrl = "https://www.rajec.sk/cache/blocks/lg/87/01930bd2-3b33-7cdf-84f5-8ec4fde6f187.webp";
 
   return (
@@ -97,11 +96,11 @@ export function Navbar() {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-            ) : !isStaticExport ? (
+            ) : (
               <Button asChild size="sm" className="bg-brand-red hover:bg-red-700 text-white border-0">
                 <Link href="/auth/login">Prihlásiť sa</Link>
               </Button>
-            ) : null
+            )
             }
 
             {/* Mobile menu toggle */}

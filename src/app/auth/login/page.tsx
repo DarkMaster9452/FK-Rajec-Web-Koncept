@@ -13,9 +13,18 @@ import { Loader2, Lock, Mail } from "lucide-react";
 export default function LoginPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const isStaticExport = process.env.NEXT_PUBLIC_STATIC_EXPORT === "true";
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+
+    if (isStaticExport) {
+      toast.error("Prihlásenie na GitHub Pages nefunguje. Použi backend deployment (napr. Vercel).", {
+        duration: 5000,
+      });
+      return;
+    }
+
     const form = new FormData(e.currentTarget);
     setLoading(true);
 
@@ -57,6 +66,12 @@ export default function LoginPage() {
         <div className="bg-white/5 border border-white/10 rounded-sm p-8 backdrop-blur-sm">
           <h2 className="font-heading text-white text-2xl mb-6 tracking-wider">PRIHLÁSIŤ SA</h2>
 
+          {isStaticExport && (
+            <div className="mb-5 rounded-sm border border-amber-500/40 bg-amber-500/10 p-3 text-xs text-amber-200">
+              Táto stránka je hostovaná staticky na GitHub Pages, preto prihlásenie nie je dostupné.
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-2">
               <Label className="text-white/70 text-xs tracking-wider uppercase">Email</Label>
@@ -67,6 +82,7 @@ export default function LoginPage() {
                   type="email"
                   placeholder="vas@email.sk"
                   required
+                  disabled={isStaticExport}
                   className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-brand-red focus:ring-brand-red"
                 />
               </div>
@@ -81,6 +97,7 @@ export default function LoginPage() {
                   type="password"
                   placeholder="••••••••"
                   required
+                  disabled={isStaticExport}
                   className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-brand-red focus:ring-brand-red"
                 />
               </div>
@@ -88,7 +105,7 @@ export default function LoginPage() {
 
             <Button
               type="submit"
-              disabled={loading}
+              disabled={loading || isStaticExport}
               className="w-full bg-brand-red hover:bg-red-700 text-white font-semibold tracking-wider h-11"
             >
               {loading ? (
