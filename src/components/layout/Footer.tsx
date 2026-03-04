@@ -10,8 +10,8 @@ export function Footer() {
         {/* Brand */}
         <div className="lg:col-span-1">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-sm overflow-hidden bg-white/10 border border-white/20 shrink-0">
-              <img src={logoUrl} alt="FK Rajec logo" className="w-full h-full object-cover" />
+            <div className="w-10 h-10 rounded-sm overflow-hidden bg-white/10 border border-white/20 p-0.5 shrink-0">
+              <img src={logoUrl} alt="FK Rajec logo" className="w-full h-full object-contain" />
             </div>
             <div>
               <p className="font-heading text-white text-lg tracking-widest">FK RAJEC</p>

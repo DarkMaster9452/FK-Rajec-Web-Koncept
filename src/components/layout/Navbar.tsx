@@ -35,8 +35,8 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-sm overflow-hidden bg-white/10 border border-white/20 shrink-0">
-              <img src={logoUrl} alt="FK Rajec logo" className="w-full h-full object-cover" />
+            <div className="w-10 h-10 rounded-sm overflow-hidden bg-white/10 border border-white/20 p-0.5 shrink-0">
+              <img src={logoUrl} alt="FK Rajec logo" className="w-full h-full object-contain" />
             </div>
             <div className="flex flex-col leading-none">
               <span className="font-heading text-white text-xl tracking-widest">FK RAJEC</span>

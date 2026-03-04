@@ -73,8 +73,8 @@ export function DashboardSidebar({ session }: Props) {
     <Sidebar collapsible="icon">
       <SidebarHeader className="border-b border-sidebar-border">
         <Link href="/" className="flex items-center gap-3 px-2 py-1">
-          <div className="w-9 h-9 rounded-sm overflow-hidden bg-white/10 border border-white/20 shrink-0">
-            <img src={logoUrl} alt="FK Rajec logo" className="w-full h-full object-cover" />
+          <div className="w-9 h-9 rounded-sm overflow-hidden bg-white/10 border border-white/20 p-0.5 shrink-0">
+            <img src={logoUrl} alt="FK Rajec logo" className="w-full h-full object-contain" />
           </div>
           <div className="flex flex-col leading-none">
             <span className="font-heading text-sidebar-foreground text-base tracking-widest">FK RAJEC</span>
